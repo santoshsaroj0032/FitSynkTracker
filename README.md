@@ -6,4 +6,5 @@
 
 
 
-![image](https://github.com/santoshsaroj0032/FitSynkTracker/assets/118922022/09725320-27e9-4b36-a319-a6a8bbd247ea)
+
+![image](https://github.com/user-attachments/assets/25184287-7497-4451-8260-5adbbf4c27b4)
