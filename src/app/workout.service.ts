@@ -7,7 +7,7 @@ export interface WorkoutEntry {
   workoutMinutes: number;
 }
 
-@Injectable({
+@Injectable({ 
   providedIn: 'root'
 })
 export class WorkoutService {

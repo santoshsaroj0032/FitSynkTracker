@@ -9,7 +9,7 @@ module.exports = function(config) {
       require('karma-coverage')
     ],
     client: {
-      clearContext: false // leave Jasmine Spec Runner output visible in browser
+      clearContext: false  
     },
     coverageReporter: {
       dir: require('path').join(__dirname, 'coverage'),

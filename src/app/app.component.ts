@@ -1,3 +1,5 @@
+ 
+
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Chart, registerables } from 'chart.js';
@@ -14,39 +16,39 @@ interface WorkoutEntry {
   selector: 'app-root',
   template: `
     <div class="container">
-      <h1>Health Challenge Tracker</h1>
-      <form #workoutForm="ngForm" (ngSubmit)="onSubmit(workoutForm)">
+      <h1 class="text-center fs-1" >Health Challenge Tracker</h1>
+      <form #workoutForm="ngForm" (ngSubmit)="onSubmit(workoutForm)" class="my-4 p-4 border rounded bg-light">
         <div class="form-group">
-          <label for="userName">User Name*</label>
-          <input type="text" id="userName" name="userName" [(ngModel)]="userName" required>
+          <label for="userName">User Name</label>
+          <input type="text" id="userName" name="userName" [(ngModel)]="userName" class="form-control" required>
         </div>
         <div class="form-row">
-          <div class="form-group">
-            <label for="workoutType">Workout Type*</label>
-            <select id="workoutType" name="workoutType" [(ngModel)]="workoutType" required>
+          <div class="form-group col">
+            <label for="workoutType">Workout Type</label>
+            <select id="workoutType" name="workoutType" [(ngModel)]="workoutType" class="form-control" required>
               <option value="">Select a workout type</option>
               <option *ngFor="let type of availableWorkoutTypes" [value]="type">{{type}}</option>
             </select>
           </div>
-          <div class="form-group">
-            <label for="workoutMinutes">Workout Minutes*</label>
-            <input type="number" id="workoutMinutes" name="workoutMinutes" [(ngModel)]="workoutMinutes" required>
+          <div class="form-group col">
+            <label for="workoutMinutes">Workout Minutes</label>
+            <input type="number" id="workoutMinutes" name="workoutMinutes" [(ngModel)]="workoutMinutes" class="form-control" required>
           </div>
         </div>
-        <button type="submit" [disabled]="!workoutForm.form.valid">Add Workout</button>
+        <button type="submit" [disabled]="!workoutForm.form.valid" class="btn btn-primary">Add Workout</button>
       </form>
 
-      <div class="workout-list">
-        <h2>Workout Entries</h2>
-        <div class="filters">
-          <input type="text" placeholder="Search by name" [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()">
-          <select [(ngModel)]="filterType" (ngModelChange)="applyFilters()">
+      <div class="workout-list my-4">
+        <h2 class="text-center">Workout Entries</h2>
+        <div class="filters d-flex justify-content-between my-3">
+          <input type="text" placeholder="Search by name" [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" class="form-control">
+          <select [(ngModel)]="filterType" (ngModelChange)="applyFilters()" class="form-control ml-3">
             <option value="">All Workout Types</option>
             <option *ngFor="let type of availableWorkoutTypes" [value]="type">{{type}}</option>
           </select>
         </div>
-        <table>
-          <thead>
+        <table class="table table-bordered table-striped">
+          <thead class="thead-dark">
             <tr>
               <th>Name</th>
               <th>Workouts</th>
@@ -63,11 +65,11 @@ interface WorkoutEntry {
             </tr>
           </tbody>
         </table>
-        <div class="pagination">
-          <button (click)="changePage(-1)" [disabled]="currentPage === 1">&lt;</button>
+        <div class="pagination d-flex justify-content-between align-items-center">
+          <button (click)="changePage(-1)" [disabled]="currentPage === 1" class="btn btn-secondary">&lt;</button>
           <span>Page {{currentPage}} of {{totalPages}}</span>
-          <button (click)="changePage(1)" [disabled]="currentPage === totalPages">&gt;</button>
-          <select [(ngModel)]="itemsPerPage" (ngModelChange)="applyFilters()">
+          <button (click)="changePage(1)" [disabled]="currentPage === totalPages" class="btn btn-secondary">&gt;</button>
+          <select [(ngModel)]="itemsPerPage" (ngModelChange)="applyFilters()" class="form-control ml-3">
             <option [value]="5">5 per page</option>
             <option [value]="10">10 per page</option>
             <option [value]="20">20 per page</option>
@@ -75,18 +77,19 @@ interface WorkoutEntry {
         </div>
       </div>
 
-      <div class="workout-progress">
+      <div class="workout-progress my-4 d-flex">
         <div class="user-list">
           <h2>Users</h2>
-          <ul>
+          <ul class="list-group">
             <li *ngFor="let user of getUniqueUsers()"
                 (click)="selectUser(user)"
-                [class.selected]="user === selectedUser">
+                [class.selected]="user === selectedUser"
+                class="list-group-item">
               {{user}}
             </li>
           </ul>
         </div>
-        <div class="chart-container" *ngIf="selectedUser">
+        <div class="chart-container flex-grow-1 ml-4" *ngIf="selectedUser">
           <h2>{{selectedUser}}'s workout progress</h2>
           <canvas id="chartCanvas"></canvas>
         </div>
@@ -94,29 +97,135 @@ interface WorkoutEntry {
     </div>
   `,
   styles: [`
-    .container { max-width: 1000px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif; }
-    .form-group { margin-bottom: 15px; }
-    .form-row { display: flex; gap: 15px; }
-    .form-row .form-group { flex: 1; }
-    label { display: block; margin-bottom: 5px; color: #666; }
-    input, select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-    button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    button:disabled { background-color: #cccccc; }
-    .workout-list { margin-top: 30px; }
-    .filters { display: flex; gap: 15px; margin-bottom: 15px; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    th { background-color: #f2f2f2; }
-    .pagination { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
-    .pagination span { margin: 0 10px; }
-    .pagination select { margin-left: 10px; }
-    .workout-progress { display: flex; margin-top: 30px; }
-    .user-list { width: 200px; margin-right: 20px; }
-    .user-list ul { list-style-type: none; padding: 0; }
-    .user-list li { padding: 10px; cursor: pointer; border-bottom: 1px solid #ddd; }
-    .user-list li.selected { background-color: #e0e0e0; }
-    .chart-container { flex-grow: 1; }
-    canvas { width: 100% !important; height: 300px !important; }
+.container {
+    width: 100vw;
+    height: 100vh; /* Full viewport height */
+    margin: 0 auto;
+    padding: 20px;
+   
+    font-family: 'Courier New', Courier, monospace;
+  }
+    .form-group {
+      margin-bottom: 15px;
+      
+    }
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+    .form-row .form-group {
+      flex: 1;
+    }
+    label {
+    display: block;
+    margin-bottom: 5px;
+    color: #666;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-family: 'Courier New', Courier, monospace;
+
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background-color: #cccccc;
+    }
+    .workout-list {
+      margin-top: 30px;
+      font-family: 'Courier New', Courier, monospace;
+
+    }
+    .filters {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+      font-family: 'Courier New', Courier, monospace;
+
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+      font-family: 'Courier New', Courier, monospace;
+
+    }
+    th {
+      background-color: #f2f2f2;
+      font-family: 'Courier New', Courier, monospace;
+
+    }
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      font-family: 'Courier New', Courier, monospace;
+
+    }
+    .pagination span {
+      margin: 0 10px;
+      font-family: 'Courier New', Courier, monospace;
+
+    }
+    .pagination select {
+      margin-left: 10px;
+      font-family: 'Courier New', Courier, monospace;
+
+    }
+    .workout-progress {
+      display: flex;
+      margin-top: 30px;
+    }
+    .user-list {
+      width: 200px;
+      margin-right: 20px;
+      font-family: 'Courier New', Courier, monospace;
+
+    }
+    .user-list ul {
+      list-style-type: none;
+      padding: 0;
+      font-family: 'Courier New', Courier, monospace;
+
+    }
+    .user-list li {
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid #ddd;
+      font-family: 'Courier New', Courier, monospace;
+
+    }
+    .user-list li.selected {
+      background-color: #e0e0e0;
+    }
+    .chart-container {
+      flex-grow: 1;
+    }
+    canvas {
+      width: 100% !important;
+      height: 300px !important;
+    }
   `]
 })
 export class AppComponent implements OnInit {
@@ -161,6 +270,17 @@ export class AppComponent implements OnInit {
         { userName: 'Mike Johnson', workoutType: 'Yoga', workoutMinutes: 50 },
         { userName: 'Mike Johnson', workoutType: 'Cycling', workoutMinutes: 40 }
       ];
+
+      // this.workoutEntries = [
+      //   { userName: 'Alice Brown', workoutType: 'Running', workoutMinutes: 30 },
+      //   { userName: 'Alice Brown', workoutType: 'Cycling', workoutMinutes: 45 },
+      //   { userName: 'Bob White', workoutType: 'Swimming', workoutMinutes: 60 },
+      //   { userName: 'Bob White', workoutType: 'Running', workoutMinutes: 20 },
+      //   { userName: 'Charlie Green', workoutType: 'Yoga', workoutMinutes: 50 },
+      //   { userName: 'Charlie Green', workoutType: 'Cycling', workoutMinutes: 40 }
+      // ];
+      
+
       this.saveToLocalStorage();
     }
   }
