@@ -245,8 +245,8 @@ export class AppComponent implements OnInit {
   totalPages: number = 1;
 
   availableWorkoutTypes: string[] = [
-    'Running', 'Walking', 'Cycling', 'Swimming', 'Weightlifting',
-    'Yoga', 'Pilates', 'HIIT', 'Dance', 'Martial Arts'
+    'Gym','Running',  'Weightlifting','Cycling', 'Swimming','Walking',  
+    'Yoga', 'Cricket',  'Dance', 'Martial Arts'
   ];
 
   constructor(private elementRef: ElementRef) {}
@@ -271,15 +271,7 @@ export class AppComponent implements OnInit {
         { userName: 'Mike Johnson', workoutType: 'Cycling', workoutMinutes: 40 }
       ];
 
-      // this.workoutEntries = [
-      //   { userName: 'Alice Brown', workoutType: 'Running', workoutMinutes: 30 },
-      //   { userName: 'Alice Brown', workoutType: 'Cycling', workoutMinutes: 45 },
-      //   { userName: 'Bob White', workoutType: 'Swimming', workoutMinutes: 60 },
-      //   { userName: 'Bob White', workoutType: 'Running', workoutMinutes: 20 },
-      //   { userName: 'Charlie Green', workoutType: 'Yoga', workoutMinutes: 50 },
-      //   { userName: 'Charlie Green', workoutType: 'Cycling', workoutMinutes: 40 }
-      // ];
-      
+     
 
       this.saveToLocalStorage();
     }
@@ -354,7 +346,7 @@ export class AppComponent implements OnInit {
             data: data,
             backgroundColor: 'rgba(54, 162, 235, 0.5)',
             borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1
+            borderWidth: 3
           }]
         },
         options: {
